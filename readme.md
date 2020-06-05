@@ -4,7 +4,7 @@ This is a modular RL code base for research. The intent is to enable surgical mo
 
 The agent has life-cycle hooks that the modules "hook" into. The important ones are: `_setup` (called after all modules are set but before any environment interactions), `_process_experience` (called with each new experience), `_optimize` (called at each optimization step), `save/load` (called upon saving / loading the agent). 
 
-See comments in `agent_base.py`, brief test scripts in `tests`, and example TD3/SAC Mujoco agents in `experiments/batch_rl/train_online_agent.py`. 
+See comments in `mrl/agent_base.py`, brief test scripts in `tests`, and example TD3/SAC Mujoco agents in `experiments/batch_rl/train_online_agent.py`. 
 
 The modular structure is technically framework agnostic, so could be used with either Pytorch or TF-based modules, or even a mix, but right now all modules that need a framework use Pytorch. 
 
@@ -39,26 +39,26 @@ The second command should solve the environment in <1 minute (better than -5 avg
 
 ## Usage
 
-To understand how the code works, read `agent_base.py`. 
+To understand how the code works, read `mrl/agent_base.py`. 
 
 See `tests/test_agent_sac.py` and `experiments/batch_rl` for example usage. The basic outline is as follows:
 
 1. Construct a config object that contains all the agent hyperparameters and modules. There are some existing base configs / convenience methods for creating default SAC/TD3/DDPG agents (see, e.g., the batch_rl code). If you use `argparse` you can use a config object automatically populate the parser using `parser = add_config_args(parser, config)`. 
 2. Call `mrl.config_to_agent` on the config to get back an agent. 
-3. Use the agent however you want; e.g., call it's train/eval methods, save/load, module methods, and so on. 
+3. Use the agent however you want; e.g., call its train/eval methods, save/load, module methods, and so on. 
 
 To add functionality or a new algorithm, you generally just need to define a one or more modules that hook into the agent's lifecycle methods and add them to the config. They automatically hook into the agent's lifecycle methods, so the rest of the code can stay the same. 
 
 ## Implemented / Outstanding
 
 Implemented:
-- DDPG, TD3, SAC, basic DQN
-- HER (computed online) (https://arxiv.org/abs/1707.01495)
-- Random ensemble DDPG (based on striving for simplicity in deep RL https://arxiv.org/abs/1907.04543 --- could be improved)
-- N-step returns (computed online) (see Rainbow: https://arxiv.org/pdf/1710.02298.pdf) [not compatible with HER]
-- MLE versions of DDPG/TD3 using Gaussian critic (called ``Sigma'' in the code, cf. https://arxiv.org/abs/1612.01474)
-- Fixed-horizon DDPG (based on FHTD, https://arxiv.org/abs/1909.03906)
-- Gamma as an auxiliary task (just pass a vector of k gammas and use a k-output critic --- last Gamma will be used to train policy) (based on hyperbolic discounting paper https://arxiv.org/abs/1902.06865)
+- [DDPG](https://arxiv.org/abs/1509.02971), [TD3](https://arxiv.org/abs/1802.09477), [SAC](https://arxiv.org/abs/1801.01290), [basic DQN](https://arxiv.org/abs/1312.5602)
+- [HER](https://arxiv.org/abs/1707.01495) (computed online) 
+- Random ensemble DDPG (based on [An Optimistic Perspective on Offline Reinforcement Learning](https://arxiv.org/abs/1907.04543) --- could be improved)
+- N-step returns (computed online) (see [Rainbow](https://arxiv.org/pdf/1710.02298.pdf)) [not compatible with HER]
+- MLE versions of DDPG/TD3 using Gaussian critic (called ``Sigma'' in the code, cf. [Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles](https://arxiv.org/abs/1612.01474))
+- Fixed-horizon DDPG (based on [Fixed-Horizon Temporal Difference Methods](https://arxiv.org/abs/1909.03906))
+- Gamma as an auxiliary task (just pass a vector of k gammas and use a k-output critic --- last Gamma will be used to train policy) (based on [Hyperbolic Discounting and Learning over Multiple Horizons](https://arxiv.org/abs/1902.06865))
 - Support for goal-based intrinsic motivation, in goal-based environments 
 
 Some todos:
